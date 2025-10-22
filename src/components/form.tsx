@@ -38,7 +38,7 @@ type FormBaseProps<
   children: (
     field: Parameters<
       ControllerProps<TFieldValues, TName, TTransformedValues>["render"]
-    >[0]["field"] & {
+    >[number]["field"] & {
       "aria-invalid": boolean
       id: string
     }
