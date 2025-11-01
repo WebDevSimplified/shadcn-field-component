@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import { createProject } from "@/actions/project"
-import {
-  FormCheckbox,
-  FormInput,
-  FormSelect,
-  FormTextarea,
-} from "@/components/form"
-import { Button } from "@/components/ui/button"
+import { createProject } from "@/actions/project";
+import { FormCheckbox } from "@/components/form/react-hook-form/FormCheckbox";
+import { FormInput } from "@/components/form/react-hook-form/FormInput";
+import { FormSelect } from "@/components/form/react-hook-form/FormSelect";
+import { FormTextarea } from "@/components/form/react-hook-form/FormTextarea";
+
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldContent,
@@ -17,20 +16,20 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from "@/components/ui/field"
+} from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { SelectItem } from "@/components/ui/select"
-import { PROJECT_STATUSES, projectSchema } from "@/schemas/project"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { XIcon } from "lucide-react"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@/components/ui/input-group";
+import { SelectItem } from "@/components/ui/select";
+import { PROJECT_STATUSES, projectSchema } from "@/schemas/project";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { XIcon } from "lucide-react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function HomePage() {
   const form = useForm({
@@ -46,7 +45,7 @@ export default function HomePage() {
         push: false,
       },
     },
-  })
+  });
 
   const {
     fields: users,
@@ -55,19 +54,19 @@ export default function HomePage() {
   } = useFieldArray({
     control: form.control,
     name: "users",
-  })
+  });
 
   async function onSubmit(data: z.infer<typeof projectSchema>) {
-    const res = await createProject(data)
+    const res = await createProject(data);
 
     if (res.success) {
-      form.reset()
+      form.reset();
       toast.success("Project created successfully!", {
         description: JSON.stringify(data, null, 2),
         className: "whitespace-pre-wrap font-mono",
-      })
+      });
     } else {
-      toast.error("Failed to create project.")
+      toast.error("Failed to create project.");
     }
   }
 
@@ -75,10 +74,21 @@ export default function HomePage() {
     <div className="container px-4 mx-auto my-6">
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
-          <FormInput control={form.control} name="name" label="Name" />
+          <FormInput
+            control={form.control}
+            name="name"
+            label="Name"
+            type="text"
+            placeholder="Project Name"
+          />
 
-          <FormSelect control={form.control} name="status" label="Status">
-            {PROJECT_STATUSES.map(status => (
+          <FormSelect
+            control={form.control}
+            name="status"
+            label="Status"
+            placeholder="Select status"
+          >
+            {PROJECT_STATUSES.map((status) => (
               <SelectItem key={status} value={status}>
                 {status}
               </SelectItem>
@@ -90,6 +100,7 @@ export default function HomePage() {
             name="description"
             label="Description"
             description="Be as detailed as possible"
+            placeholder="Project description"
           />
 
           <FieldSet>
@@ -159,6 +170,7 @@ export default function HomePage() {
                             aria-invalid={fieldState.invalid}
                             aria-label={`User ${index + 1} email`}
                             type="email"
+                            placeholder="User Email"
                           />
                           {users.length > 1 && (
                             <InputGroupAddon align="inline-end">
@@ -188,5 +200,5 @@ export default function HomePage() {
         </FieldGroup>
       </form>
     </div>
-  )
+  );
 }
