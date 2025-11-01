@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { createProject } from "@/actions/project"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { createProject } from "@/actions/project";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldContent,
@@ -13,28 +13,28 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { PROJECT_STATUSES, projectSchema } from "@/schemas/project"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { XIcon } from "lucide-react"
-import { Controller, useFieldArray, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { PROJECT_STATUSES, projectSchema } from "@/schemas/project";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { XIcon } from "lucide-react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function HomePage() {
   const form = useForm({
@@ -50,7 +50,7 @@ export default function HomePage() {
         push: false,
       },
     },
-  })
+  });
 
   const {
     fields: users,
@@ -59,19 +59,19 @@ export default function HomePage() {
   } = useFieldArray({
     control: form.control,
     name: "users",
-  })
+  });
 
   async function onSubmit(data: z.infer<typeof projectSchema>) {
-    const res = await createProject(data)
+    const res = await createProject(data);
 
     if (res.success) {
-      form.reset()
+      form.reset();
       toast.success("Project created successfully!", {
         description: JSON.stringify(data, null, 2),
         className: "whitespace-pre-wrap font-mono",
-      })
+      });
     } else {
-      toast.error("Failed to create project.")
+      toast.error("Failed to create project.");
     }
   }
 
@@ -89,6 +89,7 @@ export default function HomePage() {
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  placeholder="Project name"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -108,10 +109,10 @@ export default function HomePage() {
                     onBlur={field.onBlur}
                     id={field.name}
                   >
-                    <SelectValue />
+                    <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    {PROJECT_STATUSES.map(status => (
+                    {PROJECT_STATUSES.map((status) => (
                       <SelectItem key={status} value={status}>
                         {status}
                       </SelectItem>
@@ -139,6 +140,7 @@ export default function HomePage() {
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
+                  placeholder="Project description"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -282,6 +284,7 @@ export default function HomePage() {
                             aria-invalid={fieldState.invalid}
                             aria-label={`User ${index + 1} email`}
                             type="email"
+                            placeholder="User email"
                           />
                           {users.length > 1 && (
                             <InputGroupAddon align="inline-end">
@@ -311,5 +314,5 @@ export default function HomePage() {
         </FieldGroup>
       </form>
     </div>
-  )
+  );
 }

@@ -1,51 +1,51 @@
+import type { ReactNode } from "react";
 import {
   Controller,
-  ControllerProps,
-  FieldPath,
-  FieldValues,
-} from "react-hook-form"
+  type ControllerProps,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 import {
   Field,
   FieldContent,
   FieldDescription,
   FieldError,
   FieldLabel,
-} from "./ui/field"
-import { Input } from "./ui/input"
-import { ReactNode } from "react"
-import { Textarea } from "./ui/textarea"
-import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select"
-import { Checkbox } from "./ui/checkbox"
+} from "../../ui/field";
 
 type FormControlProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TTransformedValues = TFieldValues
 > = {
-  name: TName
-  label: ReactNode
-  description?: ReactNode
-  control: ControllerProps<TFieldValues, TName, TTransformedValues>["control"]
-}
+  name: TName;
+  label: ReactNode;
+  description?: ReactNode;
+  type?: React.ComponentProps<"input">["type"];
+  placeholder?: React.ComponentProps<"input">["placeholder"];
+  control: ControllerProps<TFieldValues, TName, TTransformedValues>["control"];
+};
 
 type FormBaseProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TTransformedValues = TFieldValues
 > = FormControlProps<TFieldValues, TName, TTransformedValues> & {
-  horizontal?: boolean
-  controlFirst?: boolean
+  horizontal?: boolean;
+  controlFirst?: boolean;
   children: (
     field: Parameters<
       ControllerProps<TFieldValues, TName, TTransformedValues>["render"]
     >[0]["field"] & {
-      "aria-invalid": boolean
-      id: string
+      "aria-invalid": boolean;
+      id: string;
+      type?: string;
+      placeholder?: string;
     }
-  ) => ReactNode
-}
+  ) => ReactNode;
+};
 
-type FormControlFunc<
+export type FormControlFunc<
   ExtraProps extends Record<string, unknown> = Record<never, never>
 > = <
   TFieldValues extends FieldValues = FieldValues,
@@ -53,9 +53,9 @@ type FormControlFunc<
   TTransformedValues = TFieldValues
 >(
   props: FormControlProps<TFieldValues, TName, TTransformedValues> & ExtraProps
-) => ReactNode
+) => ReactNode;
 
-function FormBase<
+export function FormBase<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
   TTransformedValues = TFieldValues
@@ -65,6 +65,8 @@ function FormBase<
   label,
   name,
   description,
+  type,
+  placeholder,
   controlFirst,
   horizontal,
 }: FormBaseProps<TFieldValues, TName, TTransformedValues>) {
@@ -78,15 +80,18 @@ function FormBase<
             <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
             {description && <FieldDescription>{description}</FieldDescription>}
           </>
-        )
+        );
         const control = children({
           ...field,
           id: field.name,
           "aria-invalid": fieldState.invalid,
-        })
+          type,
+          placeholder,
+        });
+
         const errorElem = fieldState.invalid && (
           <FieldError errors={[fieldState.error]} />
-        )
+        );
 
         return (
           <Field
@@ -109,48 +114,8 @@ function FormBase<
               </>
             )}
           </Field>
-        )
+        );
       }}
     />
-  )
-}
-
-export const FormInput: FormControlFunc = props => {
-  return <FormBase {...props}>{field => <Input {...field} />}</FormBase>
-}
-
-export const FormTextarea: FormControlFunc = props => {
-  return <FormBase {...props}>{field => <Textarea {...field} />}</FormBase>
-}
-
-export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
-  children,
-  ...props
-}) => {
-  return (
-    <FormBase {...props}>
-      {({ onChange, onBlur, ...field }) => (
-        <Select {...field} onValueChange={onChange}>
-          <SelectTrigger
-            aria-invalid={field["aria-invalid"]}
-            id={field.id}
-            onBlur={onBlur}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>{children}</SelectContent>
-        </Select>
-      )}
-    </FormBase>
-  )
-}
-
-export const FormCheckbox: FormControlFunc = props => {
-  return (
-    <FormBase {...props} horizontal controlFirst>
-      {({ onChange, value, ...field }) => (
-        <Checkbox {...field} checked={value} onCheckedChange={onChange} />
-      )}
-    </FormBase>
-  )
+  );
 }

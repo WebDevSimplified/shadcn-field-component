@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { createProject } from "@/actions/project"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { createProject } from "@/actions/project";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldContent,
@@ -13,29 +13,29 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { PROJECT_STATUSES, projectSchema } from "@/schemas/project"
-import { XIcon } from "lucide-react"
-import { toast } from "sonner"
-import { z } from "zod"
-import { useForm } from "@tanstack/react-form"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { PROJECT_STATUSES, projectSchema } from "@/schemas/project";
+import { XIcon } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+import { useForm } from "@tanstack/react-form";
 
-type FormData = z.infer<typeof projectSchema>
+type FormData = z.infer<typeof projectSchema>;
 
 export default function HomePage() {
   const form = useForm({
@@ -54,33 +54,33 @@ export default function HomePage() {
       onSubmit: projectSchema,
     },
     onSubmit: async ({ value }) => {
-      const res = await createProject(value)
+      const res = await createProject(value);
 
       if (res.success) {
-        form.reset()
+        form.reset();
         toast.success("Project created successfully!", {
           description: JSON.stringify(value, null, 2),
           className: "whitespace-pre-wrap font-mono",
-        })
+        });
       } else {
-        toast.error("Failed to create project.")
+        toast.error("Failed to create project.");
       }
     },
-  })
+  });
 
   return (
     <div className="container px-4 mx-auto my-6">
       <form
-        onSubmit={e => {
-          e.preventDefault()
-          form.handleSubmit()
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
         }}
       >
         <FieldGroup>
           <form.Field name="name">
-            {field => {
+            {(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Name</FieldLabel>
@@ -89,33 +89,37 @@ export default function HomePage() {
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.value)}
+                    onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
+                    placeholder="Project name"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           </form.Field>
 
           <form.Field name="status">
-            {field => {
+            {(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Status</FieldLabel>
                   <Select
-                    onValueChange={e =>
+                    onValueChange={(e) =>
                       field.handleChange(e as (typeof PROJECT_STATUSES)[number])
                     }
                     value={field.state.value}
                   >
                     <SelectTrigger aria-invalid={isInvalid} id={field.name}>
-                      <SelectValue onBlur={field.handleBlur} />
+                      <SelectValue
+                        onBlur={field.handleBlur}
+                        placeholder="Select status"
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      {PROJECT_STATUSES.map(status => (
+                      {PROJECT_STATUSES.map((status) => (
                         <SelectItem key={status} value={status}>
                           {status}
                         </SelectItem>
@@ -124,14 +128,14 @@ export default function HomePage() {
                   </Select>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           </form.Field>
 
           <form.Field name="description">
-            {field => {
+            {(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldContent>
@@ -145,12 +149,13 @@ export default function HomePage() {
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={e => field.handleChange(e.target.value)}
+                    onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
+                    placeholder="Project description"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           </form.Field>
 
@@ -163,9 +168,9 @@ export default function HomePage() {
             </FieldContent>
             <FieldGroup data-slot="checkbox-group">
               <form.Field name="notifications.email">
-                {field => {
+                {(field) => {
                   const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field data-invalid={isInvalid} orientation="horizontal">
                       <Checkbox
@@ -173,7 +178,7 @@ export default function HomePage() {
                         name={field.name}
                         checked={field.state.value}
                         onBlur={field.handleBlur}
-                        onCheckedChange={e => field.handleChange(e === true)}
+                        onCheckedChange={(e) => field.handleChange(e === true)}
                         aria-invalid={isInvalid}
                       />
                       <FieldLabel className="font-normal" htmlFor={field.name}>
@@ -183,14 +188,14 @@ export default function HomePage() {
                         <FieldError errors={field.state.meta.errors} />
                       )}
                     </Field>
-                  )
+                  );
                 }}
               </form.Field>
 
               <form.Field name="notifications.sms">
-                {field => {
+                {(field) => {
                   const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field data-invalid={isInvalid} orientation="horizontal">
                       <Checkbox
@@ -198,7 +203,7 @@ export default function HomePage() {
                         name={field.name}
                         checked={field.state.value}
                         onBlur={field.handleBlur}
-                        onCheckedChange={e => field.handleChange(e === true)}
+                        onCheckedChange={(e) => field.handleChange(e === true)}
                         aria-invalid={isInvalid}
                       />
                       <FieldLabel className="font-normal" htmlFor={field.name}>
@@ -208,14 +213,14 @@ export default function HomePage() {
                         <FieldError errors={field.state.meta.errors} />
                       )}
                     </Field>
-                  )
+                  );
                 }}
               </form.Field>
 
               <form.Field name="notifications.push">
-                {field => {
+                {(field) => {
                   const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid
+                    field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
                     <Field data-invalid={isInvalid} orientation="horizontal">
                       <Checkbox
@@ -223,7 +228,7 @@ export default function HomePage() {
                         name={field.name}
                         checked={field.state.value}
                         onBlur={field.handleBlur}
-                        onCheckedChange={e => field.handleChange(e === true)}
+                        onCheckedChange={(e) => field.handleChange(e === true)}
                         aria-invalid={isInvalid}
                       />
                       <FieldLabel className="font-normal" htmlFor={field.name}>
@@ -233,7 +238,7 @@ export default function HomePage() {
                         <FieldError errors={field.state.meta.errors} />
                       )}
                     </Field>
-                  )
+                  );
                 }}
               </form.Field>
             </FieldGroup>
@@ -242,7 +247,7 @@ export default function HomePage() {
           <FieldSeparator />
 
           <form.Field name="users" mode="array">
-            {field => {
+            {(field) => {
               return (
                 <FieldSet>
                   <div className="flex justify-between gap-2 items-center">
@@ -269,10 +274,10 @@ export default function HomePage() {
                   <FieldGroup>
                     {field.state.value.map((_, index) => (
                       <form.Field key={index} name={`users[${index}].email`}>
-                        {innerField => {
+                        {(innerField) => {
                           const isInvalid =
                             innerField.state.meta.isTouched &&
-                            !innerField.state.meta.isValid
+                            !innerField.state.meta.isValid;
                           return (
                             <Field
                               orientation="horizontal"
@@ -286,10 +291,11 @@ export default function HomePage() {
                                     aria-label={`User ${index + 1} email`}
                                     type="email"
                                     onBlur={innerField.handleBlur}
-                                    onChange={e =>
+                                    onChange={(e) =>
                                       innerField.handleChange(e.target.value)
                                     }
                                     value={innerField.state.value}
+                                    placeholder="User Email"
                                   />
                                   {field.state.value.length > 1 && (
                                     <InputGroupAddon align="inline-end">
@@ -312,13 +318,13 @@ export default function HomePage() {
                                 )}
                               </FieldContent>
                             </Field>
-                          )
+                          );
                         }}
                       </form.Field>
                     ))}
                   </FieldGroup>
                 </FieldSet>
-              )
+              );
             }}
           </form.Field>
 
@@ -326,5 +332,5 @@ export default function HomePage() {
         </FieldGroup>
       </form>
     </div>
-  )
+  );
 }
